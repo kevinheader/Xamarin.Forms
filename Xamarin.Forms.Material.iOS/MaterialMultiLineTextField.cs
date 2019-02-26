@@ -10,18 +10,16 @@ namespace Xamarin.Forms.Platform.iOS.Material
 {
 	public class MaterialMultilineTextField : MMultilineTextField, IMaterialTextField
 	{
+
+		public MaterialMultilineTextField(IMaterialEntryRenderer element, IFontElement fontElement) => MaterialTextManager.Init(element, this, fontElement);
+
+
 		public SemanticColorScheme ColorScheme { get; set; }
 		public TypographyScheme TypographyScheme { get; set; }
 		public MTextInputControllerBase ActiveTextInputController { get; set; }
 		public ITextInput TextInput => this;
 		CGSize ContainerSize { get; set; }
 		internal bool AutoSizeWithChanges { get; set; } = false;
-
-		public MaterialMultilineTextField(IMaterialEntryRenderer element, IFontElement fontElement)
-		{
-			VisualElement.VerifyVisualFlagEnabled();
-			MaterialTextManager.Init(element, this, fontElement);
-		}
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
@@ -36,6 +34,15 @@ namespace Xamarin.Forms.Platform.iOS.Material
 			return result;
 		}
 
+		public override CGRect Frame
+		{
+			get => base.Frame; set
+			{
+				base.Frame = value;
+				UpdateExpandsOnOverflow();
+			}
+		}
+
 		void UpdateExpandsOnOverflow()
 		{
 			if (!AutoSizeWithChanges && ExpandsOnOverflow && Frame.Height > 0) 
@@ -47,24 +54,9 @@ namespace Xamarin.Forms.Platform.iOS.Material
 			}
 		}
 
-		public override CGRect Frame
-		{
-			get => base.Frame; set
-			{
-				base.Frame = value;
-				UpdateExpandsOnOverflow();
-			}
-		}
-
-
 		internal void ApplyTypographyScheme(IFontElement fontElement) => MaterialTextManager.ApplyTypographyScheme(this, fontElement);
-
 		internal void ApplyTheme(IMaterialEntryRenderer element) => MaterialTextManager.ApplyTheme(this, element);
-
 		internal void UpdatePlaceholder(IMaterialEntryRenderer element) => MaterialTextManager.UpdatePlaceholder(this, element);
-
 		internal void UpdateTextColor(IMaterialEntryRenderer element) => MaterialTextManager.UpdateTextColor(this, element);
-
-
 	}
 }

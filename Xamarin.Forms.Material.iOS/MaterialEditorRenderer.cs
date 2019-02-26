@@ -9,27 +9,13 @@ namespace Xamarin.Forms.Platform.iOS.Material
 	{
 		bool _hackHasRan = false;
 
-		protected override MaterialMultilineTextField CreateNativeControl()
-		{			
-			return new MaterialMultilineTextField(this, Element);
-		}
+		protected override MaterialMultilineTextField CreateNativeControl() => new MaterialMultilineTextField(this, Element);
+		protected IntrinsicHeightTextView IntrinsicHeightTextView => (IntrinsicHeightTextView)TextView;
+		protected override UITextView TextView => Control?.TextView;
+		protected override void SetBackgroundColor(Color color) => ApplyTheme();
 
-		protected override void SetBackgroundColor(Color color)
-		{
-			ApplyTheme();			
-		}
-
-
-		protected internal override void UpdateTextColor()
-		{
-			Control?.UpdateTextColor(this);
-		}
-
-
-		protected virtual void ApplyTheme()
-		{
-			Control?.ApplyTheme(this);
-		}
+		protected internal override void UpdateTextColor() => Control?.UpdateTextColor(this);
+		protected virtual void ApplyTheme() => Control?.ApplyTheme(this);
 
 		protected internal override void UpdateFont()
 		{
@@ -76,17 +62,6 @@ namespace Xamarin.Forms.Platform.iOS.Material
 				Control.ExpandsOnOverflow = Element.AutoSize == EditorAutoSizeOption.TextChanges;
 		}
 
-
-		public override CGRect Frame
-		{
-			get => base.Frame; 
-			set
-			{
-				base.Frame = value;
-
-			}
-		}
-
 		// this is required to force the placeholder to size correctly if it starts out prefilled
 		void InitialPlaceholderSetupHack()
 		{
@@ -111,17 +86,9 @@ namespace Xamarin.Forms.Platform.iOS.Material
 			});
 		}
 
-
-		// Placeholder is currently broken upstream and doesn't animate to the correct scale
 		string IMaterialEntryRenderer.Placeholder => Element?.Placeholder;
-		// string IMaterialEntryRenderer.Placeholder => String.Empty;
-
 		Color IMaterialEntryRenderer.TextColor => Element?.TextColor ?? Color.Default;
 		Color IMaterialEntryRenderer.PlaceholderColor => Element?.PlaceholderColor ?? Color.Default;
 		Color IMaterialEntryRenderer.BackgroundColor => Element?.BackgroundColor ?? Color.Default;
-
-		protected IntrinsicHeightTextView IntrinsicHeightTextView => (IntrinsicHeightTextView)TextView;
-		protected override UITextView TextView => Control?.TextView;
-
 	}
 }
